@@ -84,68 +84,45 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Testimonials carousel
+// Testimonials carousel - Style un seul témoignage
 const initTestimonialsCarousel = () => {
-    const grid = document.querySelector('.testimonial-grid');
+    const slides = document.querySelectorAll('.testimonial-slide');
     const prevBtn = document.getElementById('prev-testimonial');
     const nextBtn = document.getElementById('next-testimonial');
     
-    if (!grid || !prevBtn || !nextBtn) return;
+    if (!slides.length || !prevBtn || !nextBtn) return;
     
-    const testimonials = grid.querySelectorAll('.testimonial');
     let currentIndex = 0;
-    let testimonialsPerView = 3;
     
-    // Determine number of testimonials to show based on screen size
-    const updateTestimonialsPerView = () => {
-        if (window.innerWidth <= 768) {
-            testimonialsPerView = 1;
-        } else if (window.innerWidth <= 1024) {
-            testimonialsPerView = 2;
-        } else {
-            testimonialsPerView = 3;
-        }
-        showTestimonials();
-    };
-    
-    const showTestimonials = () => {
-        testimonials.forEach((testimonial, index) => {
-            if (index >= currentIndex && index < currentIndex + testimonialsPerView) {
-                testimonial.style.display = 'block';
-            } else {
-                testimonial.style.display = 'none';
+    const showSlide = (index) => {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (i === index) {
+                slide.classList.add('active');
             }
         });
         
         // Update button states
         prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex >= testimonials.length - testimonialsPerView;
-        
-        prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
-        nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
-        prevBtn.style.cursor = prevBtn.disabled ? 'not-allowed' : 'pointer';
-        nextBtn.style.cursor = nextBtn.disabled ? 'not-allowed' : 'pointer';
+        nextBtn.disabled = currentIndex === slides.length - 1;
     };
     
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
             currentIndex--;
-            showTestimonials();
+            showSlide(currentIndex);
         }
     });
     
     nextBtn.addEventListener('click', () => {
-        if (currentIndex < testimonials.length - testimonialsPerView) {
+        if (currentIndex < slides.length - 1) {
             currentIndex++;
-            showTestimonials();
+            showSlide(currentIndex);
         }
     });
     
     // Initialize
-    updateTestimonialsPerView();
-    
-    // Update on window resize
-    window.addEventListener('resize', updateTestimonialsPerView);
+    showSlide(0);
 };
 
 // Initialize carousel when DOM is loaded
